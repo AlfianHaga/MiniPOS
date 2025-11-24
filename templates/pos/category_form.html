@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{% if category %}Edit Category{% else %}Add Category{% endif %}{% endblock %}
+{% block page_title %}
+  {% include 'pos/_hero.html' with title='Kategori' subtitle='Kelola kategori produk' icon='bi bi-tag' %}
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card p-4">
+      <h4 class="mb-3">{% if category %}Edit Kategori{% else %}Tambah Kategori{% endif %}</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Nama</label>
+          {{ form.name }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Deskripsi</label>
+          {{ form.description }}
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <a href="{% url 'category_list' %}" class="btn btn-secondary">Batal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

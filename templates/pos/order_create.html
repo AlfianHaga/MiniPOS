@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %}Buat Pesanan{% endblock %}
+{% block content %}
+<h3>Buat Pesanan</h3>
+<form method="post" id="orderForm">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="customer" class="form-label">Pelanggan</label>
+    <select class="form-select" id="customer" name="customer">
+      <option value="">-- Pilih Pelanggan --</option>
+      {% for c in customers %}
+      <option value="{{ c.id }}">{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <h5>Item</h5>
+  <table class="table" id="itemsTable">
+    <thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Jumlah</th><th>Diskon %</th><th>Subtotal</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <button type="button" class="btn btn-secondary" id="addItem">Tambah Item</button>
+
+  <div class="mt-3">
+    <h5>Total: <span id="total">0.00</span></h5>
+  </div>
+
+  <div class="mt-3">
+    <button id="saveBtn" class="btn btn-primary" disabled>Simpan Pesanan</button>
+    <a class="btn btn-secondary" href="{% url 'orders_list' %}">Batal</a>
+  </div>
+</form>
+
+{% block scripts %}
+<script>
+  const products = [
+  {% for p in products %}{ id: {{ p.id }}, name: "{{ p.name|escapejs }}", price: {{ p.price }}, stock: {{ p.stock }} },{% endfor %}
+  ];
+
+  // maps
+  const productsById = {};
+  products.forEach(p=>{ productsById[p.id]=p; });
+
+  const idrFmt = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+
+  
+
+  function buildSelectElement(){
+    const sel = document.createElement('select'); sel.name='product'; sel.className='form-select product-select';
+    const empty = document.createElement('option'); empty.value=''; empty.text='-- Pilih produk --'; sel.appendChild(empty);
+    products.forEach(p=>{
+      const o = document.createElement('option'); o.value = p.id; o.text = p.name; o.dataset.price = p.price; o.dataset.stock = p.stock; sel.appendChild(o);
+    });
+    return sel;
+  }
+
+  function addRow(){
+    const tbody = document.querySelector('#itemsTable tbody');
+    const tr = document.createElement('tr');
+
+    const prodTd = document.createElement('td');
+    const sel = buildSelectElement();
+    prodTd.appendChild(sel);
+
+    const priceTd = document.createElement('td'); priceTd.className='unit-price-col'; priceTd.innerText = idrFmt.format(0);
+    const stockTd = document.createElement('td'); stockTd.className='stock-col'; stockTd.innerText = '0';
+
+    const qtyTd = document.createElement('td');
+    const qin = document.createElement('input'); qin.type='number'; qin.min=1; qin.value=1; qin.name='quantity'; qin.className='form-control quantity-input'; qtyTd.appendChild(qin);
+
+    const discountTd = document.createElement('td');
+    const din = document.createElement('input'); din.type='number'; din.min=0; din.max=100; din.value=0; din.step=0.01; din.name='discount'; din.className='form-control discount-input'; din.placeholder='%'; discountTd.appendChild(din);
+
+    const subtotalTd = document.createElement('td'); subtotalTd.className='subtotal-col'; subtotalTd.innerText = idrFmt.format(0);
+
+    const delTd = document.createElement('td');
+    const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.className='btn btn-sm btn-danger'; delBtn.innerText='Hapus';
+    delBtn.addEventListener('click', ()=>{ tr.remove(); calcTotal(); checkFormValidity(); }); delTd.appendChild(delBtn);
+
+    tr.appendChild(prodTd); tr.appendChild(priceTd); tr.appendChild(stockTd); tr.appendChild(qtyTd); tr.appendChild(discountTd); tr.appendChild(subtotalTd); tr.appendChild(delTd);
+    tbody.appendChild(tr);
+
+    // initialize select2 when jQuery+select2 available
+    const initSelect2 = ()=>{
+      if (window.jQuery && jQuery.fn.select2) {
+        const $sel = jQuery(sel);
+        $sel.select2({
+          width: '100%',
+          templateResult: function(opt){ if(!opt.id) return opt.text; const price = opt.element?.dataset?.price || 0; return jQuery('<span>'+opt.text+' — '+idrFmt.format(price)+'</span>'); },
+          templateSelection: function(opt){ if(!opt.id) return opt.text; const price = opt.element?.dataset?.price || 0; return opt.text + ' — ' + idrFmt.format(price); }
+        });
+
+        $sel.on('select2:select', function(e){
+          const selected = e.params.data.element;
+          const price = parseFloat(selected.dataset.price || 0);
+          const stock = parseInt(selected.dataset.stock || 0);
+          priceTd.innerText = idrFmt.format(price);
+          stockTd.innerText = stock;
+          qin.max = stock;
+          if (stock === 0) { qin.value = 0; qin.disabled = true; }
+          else { if (parseInt(qin.value||0) < 1) qin.value = 1; qin.disabled = false; }
+          const qty = parseInt(qin.value||0);
+          const discount = parseFloat(din.value||0);
+          const subtotal = price * qty * (1 - discount/100);
+          subtotalTd.innerText = idrFmt.format(subtotal);
+          calcTotal(); checkFormValidity();
+        });
+
+      } else {
+        // try again shortly
+        setTimeout(initSelect2, 100);
+      }
+    };
+    initSelect2();
+
+    const updateSubtotal = ()=>{
+      const val = sel.value;
+      const p = productsById[val];
+      const unit = p ? p.price : 0;
+      let qty = parseInt(qin.value || 0);
+      const discount = parseFloat(din.value || 0);
+      if (qty < 0) qty = 0;
+      const stock = p ? p.stock : 0;
+      if (qty > stock) { qty = stock; qin.value = stock; }
+      const subtotal = unit * qty * (1 - discount/100);
+      subtotalTd.innerText = idrFmt.format(subtotal);
+      calcTotal(); checkFormValidity();
+    };
+
+    qin.addEventListener('input', updateSubtotal);
+    din.addEventListener('input', updateSubtotal);
+  }
+
+  function calcTotal(){
+    let total=0;
+    document.querySelectorAll('#itemsTable tbody tr').forEach(tr=>{
+      const sel = tr.querySelector('select.product-select');
+      const pid = sel ? sel.value : '';
+      const qty = parseInt(tr.querySelector('.quantity-input').value || 0);
+      const discount = parseFloat(tr.querySelector('.discount-input').value || 0);
+      const p = productsById[pid];
+      const price = p ? p.price : 0;
+      total += price * qty * (1 - discount/100);
+    });
+    document.getElementById('total').innerText = idrFmt.format(total);
+  }
+
+  document.getElementById('addItem').addEventListener('click', addRow);
+
+  // client-side validation before submit
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    const customer = document.getElementById('customer').value;
+    if (!customer) { e.preventDefault(); alert('Pilih customer terlebih dahulu'); return false; }
+    const rows = Array.from(document.querySelectorAll('#itemsTable tbody tr'));
+    if (rows.length === 0) { e.preventDefault(); alert('Tambah minimal 1 item'); return false; }
+    for (const tr of rows) {
+      const sel = tr.querySelector('select.product-select');
+      const pid = sel ? sel.value : '';
+      const qty = parseInt(tr.querySelector('.quantity-input').value || 0);
+      if (!pid) { e.preventDefault(); alert('Pilih produk untuk semua baris'); return false; }
+      if (qty <= 0) { e.preventDefault(); alert('Quantity harus lebih dari 0'); return false; }
+      const stock = productsById[pid] ? productsById[pid].stock : 0;
+      if (qty > stock) { e.preventDefault(); alert('Quantity tidak boleh melebihi stok'); return false; }
+    }
+    // allow submit
+  });
+
+  // enable/disable Save button based on simple validity (no alerts)
+  function checkFormValidity(){
+    const saveBtn = document.getElementById('saveBtn');
+    const customer = document.getElementById('customer').value;
+    if (!customer) { saveBtn.disabled = true; return false; }
+    const rows = Array.from(document.querySelectorAll('#itemsTable tbody tr'));
+    if (rows.length === 0) { saveBtn.disabled = true; return false; }
+    for (const tr of rows) {
+      const sel = tr.querySelector('select.product-select');
+      const pid = sel ? sel.value : '';
+      const qty = parseInt(tr.querySelector('.quantity-input').value || 0);
+      if (!pid) { saveBtn.disabled = true; return false; }
+      if (qty <= 0) { saveBtn.disabled = true; return false; }
+      const stock = productsById[pid] ? productsById[pid].stock : 0;
+      if (qty > stock) { saveBtn.disabled = true; return false; }
+    }
+    saveBtn.disabled = false; return true;
+  }
+
+  // wire up checks: when customer changes or rows change, validate
+  document.getElementById('customer').addEventListener('change', checkFormValidity);
+
+  // Initialize with one row
+  addRow();
+  checkFormValidity();
+</script>
+{% endblock %}
+
+{% endblock %}

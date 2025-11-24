@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Hapus Supplier{% endblock %}
+{% block page_title %}
+  {% include 'pos/_hero.html' with title='Hapus Supplier' subtitle='Konfirmasi penghapusan' icon='bi bi-truck' %}
+{% endblock %}
+{% block content %}
+<div class="card p-4">
+  <div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <strong>Peringatan!</strong> Anda yakin ingin menghapus supplier <strong>{{ supplier.name }}</strong>?
+    <p class="mt-2 mb-0">Data ini tidak dapat dikembalikan setelah dihapus.</p>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+      <a href="{% url 'supplier_list' %}" class="btn btn-secondary">Batal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

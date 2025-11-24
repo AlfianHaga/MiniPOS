@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}{% include 'pos/_hero.html' with title='Dashboard' subtitle='Selamat datang di Mini POS System' icon='bi bi-house-door-fill' %}{% endblock %}
+{% block content %}
+{% include 'pos/_metrics.html' with m1_icon='bi bi-box-seam' m1_number=products_count m1_label='Total Produk' m2_icon='bi bi-people' m2_number=customers_count m2_label='Total Pelanggan' m3_icon='bi bi-receipt' m3_number=orders_count m3_label='Total Order' m4_icon='bi bi-cash-stack' m4_number=total_revenue m4_label='Total Revenue' %}
+<script>
+  // Keep the existing totalRevenue formatting logic: replace m4_number cell content
+  (function(){
+    const totalEl = document.getElementById('totalRevenue');
+    if(!totalEl){
+      // create the element inside the last metric card with a safe default value
+      const metricCards = document.querySelectorAll('.metric-card');
+      if(metricCards && metricCards.length >=4){
+        const target = metricCards[3].querySelector('.metric-number');
+        if(target){
+          target.innerHTML = '<span id="totalRevenue" data-value="{{ total_revenue|default:0|floatformat:2 }}">-</span>';
+        }
+      }
+    }
+  })();
+</script>
+
+{% if low_stock_count > 0 %}
+<div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+  <strong>Peringatan Stok Menipis!</strong> Ada {{ low_stock_count }} produk dengan stok kurang dari 5.
+  <a href="{% url 'low_stock_products' %}" class="alert-link">Lihat detail</a>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0"><i class="bi bi-exclamation-circle text-warning"></i> Produk Stok Menipis</h5>
+        <a href="{% url 'low_stock_products' %}" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Kategori</th>
+              <th class="text-end">Stok</th>
+              <th class="text-end">Harga</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in low_stock_products %}
+            <tr>
+              <td>
+                {{ product.name }}
+                {% if product.stock == 0 %}
+                  <span class="badge bg-danger ms-1">Habis</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark ms-1">Menipis</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if product.category %}
+                  <span class="badge bg-secondary">{{ product.category.name }}</span>
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <span class="{% if product.stock == 0 %}text-danger{% else %}text-warning{% endif %} fw-bold">
+                  {{ product.stock }}
+                </span>
+              </td>
+              <td class="text-end">{{ product.price|idr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card p-3">
+      <h5>Penjualan 7 Hari Terakhir</h5>
+      <canvas id="salesChart" width="400" height="120"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Use display labels (localized short dates) if available
+  const labels = {{ sales_labels_display_json|default:sales_labels_json|safe }};
+  const data = {{ sales_data_json|safe }};
+  const counts = {{ sales_counts_json|default:'[]'|safe }};
+
+  // Format total revenue as Indonesian Rupiah
+  const totalEl = document.getElementById('totalRevenue');
+  if (totalEl) {
+    const val = Number(totalEl.dataset.value) || 0;
+    totalEl.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+  }
+
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Penjualan (Rp)',
+        data: data,
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const v = context.parsed.y || 0;
+              const idx = context.dataIndex;
+              const orderCount = counts && counts[idx] ? counts[idx] : 0;
+              return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(v) + ' — ' + orderCount + ' pesanan';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value){
+              return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load humanize currency_filters %}
+{% block title %}Purchase Orders{% endblock %}
+{% block page_title %}
+  {% url 'purchase_order_create' as create_url %}
+  {% include 'pos/_hero.html' with title='Purchase Orders' subtitle='Kelola pesanan pembelian dari supplier' icon='bi bi-clipboard-check' action_url=create_url action_label='Buat PO Baru' action_class='btn btn-sm btn-light' %}
+{% endblock %}
+{% block content %}
+<div class="card p-3 mb-3">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-auto flex-grow-1">
+      <input type="text" name="q" class="form-control" placeholder="Cari nomor PO atau supplier..." value="{{ query|default:'' }}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+      {% if query %}<a href="{% url 'purchase_order_list' %}" class="btn btn-secondary ms-2">Hapus</a>{% endif %}
+    </div>
+  </form>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>No. PO</th>
+          <th>Supplier</th>
+          <th>Status</th>
+          <th class="text-end">Total</th>
+          <th>Tanggal Order</th>
+          <th>Tanggal Terima</th>
+          <th class="text-end">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for po in purchase_orders %}
+        <tr>
+          <td><a href="{% url 'purchase_order_detail' po.id %}">{{ po.order_number }}</a></td>
+          <td>{{ po.supplier.name }}</td>
+          <td>
+            {% if po.status == 'pending' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% elif po.status == 'received' %}
+              <span class="badge bg-success">Diterima</span>
+            {% else %}
+              <span class="badge bg-danger">Dibatalkan</span>
+            {% endif %}
+          </td>
+          <td class="text-end price">{{ po.total_amount|idr }}</td>
+          <td>{{ po.order_date|date:"d M Y, H:i" }}</td>
+          <td>{{ po.received_date|date:"d M Y, H:i"|default:"-" }}</td>
+          <td class="actions text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'purchase_order_detail' po.id %}"><i class="bi bi-eye"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Tidak ada purchase order</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

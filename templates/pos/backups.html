@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Backup Database{% endblock %}
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center w-100">
+  <div>
+    <h1 class="hero-title mb-0">Backup Database</h1>
+    <p class="hero-subtitle mb-0">Salinan database harian (otomatis) tersimpan di folder <code>backup/</code>.</p>
+  </div>
+  <div class="hero-action">
+    <a href="{% url 'dashboard' %}" class="btn btn-light btn-sm">Kembali</a>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <p class="mb-2">Backup dibuat otomatis sekali per hari saat ada request pertama. Anda juga dapat menjalankan manual perintah: <code>python manage.py backup_db</code>.</p>
+    {% if files %}
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>Nama File</th>
+            <th>Tanggal</th>
+            <th>Ukuran</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in files %}
+          <tr>
+            <td>{{ f.name }}</td>
+            <td>{{ f.modified|date:'d M Y H:i' }}</td>
+            <td>{{ f.size|filesizeformat }}</td>
+            <td><a class="btn btn-sm btn-primary" href="{% url 'backup_download' f.name %}"><i class="bi bi-download"></i> Download</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="alert alert-info mb-0">Belum ada file backup untuk ditampilkan.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

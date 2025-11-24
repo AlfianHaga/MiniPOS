@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load currency_filters %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}
+  {% url 'order_create' as create_order_url %}
+  {% include 'pos/_hero.html' with title='Pesanan' subtitle='Kelola transaksi dan penjualan' icon='bi bi-receipt' action_url=create_order_url action_label='Buat Pesanan' action_class='btn btn-sm btn-light' %}
+{% endblock %}
+{% block content %}
+<div class="card p-3 mb-3">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-auto flex-grow-1">
+      <input type="text" name="q" class="form-control" placeholder="Cari berdasarkan nama pelanggan..." value="{{ query|default:'' }}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+      {% if query %}<a href="{% url 'orders_list' %}" class="btn btn-secondary ms-2">Hapus</a>{% endif %}
+    </div>
+  </form>
+</div>
+<div class="card p-3">
+  <div class="table-responsive">
+  <table class="table table-hover align-middle mb-0 orders-table">
+  <thead><tr><th>#</th><th>Pelanggan</th><th class="text-end">Total</th><th>Tanggal</th><th class="text-end">Aksi</th></tr></thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td class="text-center">{{ o.id }}</td>
+      <td><span class="truncate" title="{{ o.customer.name }}">{{ o.customer.name }}</span></td>
+      <td class="text-end price">{{ o.total_price|idr }}</td>
+      <td class="text-center date-cell">{{ o.created_at|date:"d M, H:i" }}</td>
+      <td class="actions text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'order_detail' o.id %}"><i class="bi bi-eye"></i></a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Tidak ada pesanan</td></tr>
+    {% endfor %}
+  </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

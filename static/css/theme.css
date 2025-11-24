@@ -1,0 +1,256 @@
+/* Generic Theme (blue) copied from theme-blue.css */
+
+:root {
+    --p-1: #0d6efd;
+    /* bright blue */
+    --p-2: #0a58ca;
+    /* darker blue */
+    --accent: #0d6efd;
+    --accent-2: #0ea5e9;
+    /* cyan accent */
+    --page-bg: #f7f8fb;
+    /* neutral page background */
+    --card-bg: #ffffff;
+}
+
+/* Page background stays neutral */
+body,
+.app-shell {
+    background: var(--page-bg);
+    color: #0f1724;
+}
+
+/* Topbar keeps the gradient but is limited to the header only */
+.app-topbar {
+    background: linear-gradient(90deg, var(--p-1) 0%, var(--p-2) 60%, var(--accent-2) 100%);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.08);
+}
+
+/* Topbar nav: align to the right, compact items (like screenshot) */
+.app-topbar>.container-fluid {
+    display: flex;
+    align-items: center;
+}
+
+.app-topbar .topbar-brand {
+    flex: 0 0 auto;
+}
+
+.app-topbar .topbar-nav {
+    display: flex !important;
+    margin-left: auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.app-topbar .topbar-nav .nav-link {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 0.35rem 0.6rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Responsive: if viewport becomes narrow, collapse spacing and allow horizontal scroll */
+@media (max-width: 992px) {
+    .app-topbar .topbar-nav {
+        display: none;
+        /* keep existing behavior on smaller screens */
+    }
+}
+
+/* Ensure container layout gives nav the full middle area */
+.app-topbar>.container-fluid {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* left area (brand + page-title) should not grow */
+.app-topbar>.container-fluid>.d-flex.align-items-center {
+    flex: 0 0 auto;
+}
+
+/* right area (search + user) should not grow */
+.app-topbar>.container-fluid>.d-flex.align-items-center~.d-flex.align-items-center {
+    flex: 0 0 auto;
+}
+
+/* Make nav use all remaining width between left and right */
+.app-topbar .topbar-nav {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+/* Evenly distribute links across full nav width */
+.app-topbar .topbar-nav .nav-link {
+    flex: 1 1 0;
+    max-width: none;
+}
+
+/* Cards and main surfaces are light and clean */
+.app-main,
+.app-content,
+.container-fluid {
+    background: transparent;
+}
+
+.card {
+    background: var(--card-bg);
+    color: #0f1724;
+    border: 1px solid rgba(15, 23, 42, 0.04);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.metric-card {
+    background: linear-gradient(90deg, rgba(13, 110, 253, 0.06), rgba(14, 165, 233, 0.03));
+    color: #0f1724;
+}
+
+/* Page hero: wide banner under topbar */
+.page-hero {
+    background: linear-gradient(90deg, var(--p-1), var(--p-2));
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.page-hero .hero-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.page-hero .hero-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.95;
+}
+
+/* Metrics grid — four equal cards */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.metric-card {
+    background: #fff;
+    color: #0f1724;
+    border: 1px solid rgba(15, 23, 42, 0.04);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    padding: 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.metric-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, var(--p-1), var(--p-2));
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.metric-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-number {
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.metric-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 992px) {
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Buttons — accent gradient but subtle */
+.btn-primary,
+.btn.btn-primary {
+    background-image: linear-gradient(90deg, var(--p-1), var(--p-2));
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    filter: brightness(0.95);
+}
+
+/* Links and nav: use accent color, keep readability */
+a,
+.nav-link,
+.topbar-nav .nav-link {
+    color: var(--p-1);
+}
+
+.topbar-nav .nav-link,
+.page-title {
+    color: #fff;
+}
+
+/* topbar text stays white */
+
+/* Forms and selects: light surfaces */
+.form-control,
+.form-select,
+input,
+textarea,
+select {
+    background: #fff;
+    color: #0f1724;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+/* Select2 tweaks to match light form surfaces */
+.select2-container--default .select2-selection--single {
+    background: #fff;
+    color: #0f1724;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.select2-container--default .select2-results__option--highlighted {
+    background: rgba(13, 110, 253, 0.08);
+    color: #0f1724;
+}
+
+/* Tables: dark headers on light background */
+.table thead th {
+    color: #6b7280;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+/* Brand */
+.brand-icon {
+    background: rgba(13, 110, 253, 0.1);
+    color: #fff;
+}
+
+@media (max-width: 576px) {
+
+    .card,
+    .app-content {
+        background: #fff;
+    }
+}

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}
+  {% include 'pos/_hero.html' with title='Analytics' subtitle='Analisis penjualan mendalam' icon='bi bi-bar-chart-line' %}
+{% endblock %}
+{% block content %}
+<div class="alert alert-info mb-3">
+  <i class="bi bi-info-circle me-2"></i>
+  Data analytics untuk periode: <strong>{{ start_date|date:"d M Y" }} - {{ end_date|date:"d M Y" }}</strong>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card p-3">
+      <h6 class="mb-3"><i class="bi bi-pie-chart text-primary me-2"></i>Penjualan per Kategori</h6>
+      <canvas id="categoryChart" height="300"></canvas>
+    </div>
+  </div>
+  
+  <div class="col-md-6 mb-4">
+    <div class="card p-3">
+      <h6 class="mb-3"><i class="bi bi-trophy text-warning me-2"></i>Top 10 Produk Terlaris</h6>
+      <canvas id="topProductsChart" height="300"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 mb-4">
+    <div class="card p-3">
+      <h6 class="mb-3"><i class="bi bi-clock text-success me-2"></i>Penjualan per Jam (Heatmap)</h6>
+      <div style="max-height: 400px; overflow-y: auto;">
+        <canvas id="hourlyChart" height="150"></canvas>
+      </div>
+      <p class="text-muted small mt-2 mb-0">
+        <i class="bi bi-info-circle me-1"></i>
+        Grafik menampilkan total penjualan untuk setiap jam dalam sehari. Warna lebih gelap menunjukkan volume penjualan lebih tinggi.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card p-3">
+      <h6 class="mb-3"><i class="bi bi-box-seam text-info me-2"></i>Detail Produk Terlaris</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Produk</th>
+              <th class="text-end">Total Terjual</th>
+              <th class="text-end">Total Penjualan</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody">
+            <!-- Will be populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+    <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const categoryLabels = {{ category_labels_json|safe }};
+  const categoryData = {{ category_data_json|safe }};
+  const productLabels = {{ product_labels_json|safe }};
+  const productQtyData = {{ product_qty_data_json|safe }};
+  const productSalesData = {{ product_sales_data_json|safe }};
+  const hourLabels = {{ hour_labels_json|safe }};
+  const hourData = {{ hour_data_json|safe }};
+  const hourCounts = {{ hour_counts_json|safe }};
+
+  // Category Pie Chart
+  const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+  new Chart(categoryCtx, {
+    type: 'pie',
+    data: {
+      labels: categoryLabels,
+      datasets: [{
+        data: categoryData,
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.8)',
+          'rgba(255, 99, 132, 0.8)',
+          'rgba(255, 206, 86, 0.8)',
+          'rgba(75, 192, 192, 0.8)',
+          'rgba(153, 102, 255, 0.8)',
+          'rgba(255, 159, 64, 0.8)'
+        ],
+        borderColor: 'white',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1);
+              return context.label + ': ' + new Intl.NumberFormat('id-ID', { 
+                style: 'currency', 
+                currency: 'IDR', 
+                maximumFractionDigits: 0 
+              }).format(value) + ' (' + percentage + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Top Products Bar Chart
+  const productCtx = document.getElementById('topProductsChart').getContext('2d');
+  new Chart(productCtx, {
+    type: 'bar',
+    data: {
+      labels: productLabels,
+      datasets: [{
+        label: 'Total Penjualan (Rp)',
+        data: productSalesData,
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const idx = context.dataIndex;
+              const sales = context.parsed.x || 0;
+              const qty = productQtyData[idx];
+              return [
+                'Penjualan: ' + new Intl.NumberFormat('id-ID', { 
+                  style: 'currency', 
+                  currency: 'IDR', 
+                  maximumFractionDigits: 0 
+                }).format(sales),
+                'Terjual: ' + qty + ' unit'
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return new Intl.NumberFormat('id-ID', { 
+                notation: 'compact',
+                compactDisplay: 'short'
+              }).format(value);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Hourly Sales Bar Chart (Heatmap style)
+  const maxHourlySale = Math.max(...hourData);
+  const hourlyColors = hourData.map(val => {
+    const intensity = maxHourlySale > 0 ? val / maxHourlySale : 0;
+    return `rgba(54, 162, 235, ${0.3 + intensity * 0.7})`;
+  });
+
+  const hourCtx = document.getElementById('hourlyChart').getContext('2d');
+  new Chart(hourCtx, {
+    type: 'bar',
+    data: {
+      labels: hourLabels,
+      datasets: [{
+        label: 'Total Penjualan (Rp)',
+        data: hourData,
+        backgroundColor: hourlyColors,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const hour = context.dataIndex;
+              const sales = context.parsed.y || 0;
+              const count = hourCounts[hour];
+              return [
+                'Penjualan: ' + new Intl.NumberFormat('id-ID', { 
+                  style: 'currency', 
+                  currency: 'IDR', 
+                  maximumFractionDigits: 0 
+                }).format(sales),
+                'Transaksi: ' + count
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return new Intl.NumberFormat('id-ID', { 
+                notation: 'compact',
+                compactDisplay: 'short'
+              }).format(value);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Populate product table
+  const tableBody = document.getElementById('productTableBody');
+  productLabels.forEach((label, idx) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${label}</td>
+      <td class="text-end">${productQtyData[idx]} unit</td>
+      <td class="text-end">${new Intl.NumberFormat('id-ID', { 
+        style: 'currency', 
+        currency: 'IDR', 
+        maximumFractionDigits: 0 
+      }).format(productSalesData[idx])}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+});
+</script>
+{% endblock %}

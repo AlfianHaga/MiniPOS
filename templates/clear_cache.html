@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - Mini POS</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+        }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        p { margin-bottom: 1.5rem; opacity: 0.9; }
+        .btn {
+            background: white;
+            color: #1e40af;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: none;
+        }
+        .status.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Update Icon & Cache</h1>
+        <p>Klik tombol di bawah untuk memperbarui icon dan cache aplikasi.</p>
+        
+        <button class="btn" onclick="clearAndReload()">
+            Clear Cache & Reload
+        </button>
+        
+        <div class="status" id="status">
+            <p id="statusText">Processing...</p>
+        </div>
+    </div>
+
+    <script>
+        async function clearAndReload() {
+            const statusDiv = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            
+            statusDiv.classList.add('show');
+            statusText.textContent = '🔄 Membersihkan cache...';
+            
+            try {
+                // Unregister service worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                    statusText.textContent = '✓ Service worker dihapus';
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    );
+                    statusText.textContent = '✓ Cache dihapus';
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Clear localStorage
+                localStorage.clear();
+                statusText.textContent = '✓ LocalStorage dihapus';
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                statusText.textContent = '✅ Selesai! Reload dalam 2 detik...';
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+                
+            } catch (error) {
+                statusText.textContent = '❌ Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

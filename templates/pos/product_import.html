@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Import Produk{% endblock %}
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center w-100">
+  <div>
+    <h1 class="hero-title mb-0">Import Produk dari Excel</h1>
+    <p class="hero-subtitle mb-0">Upload file Excel untuk membuat banyak produk sekaligus</p>
+  </div>
+  <div class="hero-action">
+    <a href="{% url 'product_list' %}" class="btn btn-light btn-sm">Kembali ke Daftar Produk</a>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Upload File Excel</h5>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="file" class="form-label">Pilih File Excel (.xlsx atau .xls)</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".xlsx,.xls" required>
+            <div class="form-text">File harus memiliki kolom: Name, Category, Price, Stock, Description</div>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i> Upload & Import</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Petunjuk Import</h5>
+        <ol class="mb-3">
+          <li>Download template Excel di bawah ini</li>
+          <li>Isi data produk sesuai kolom yang tersedia</li>
+          <li>Upload file Excel yang sudah diisi</li>
+          <li>Sistem akan membuat produk secara otomatis</li>
+        </ol>
+        <a href="{% url 'product_import_template' %}" class="btn btn-outline-primary w-100">
+          <i class="bi bi-download me-1"></i> Download Template Excel
+        </a>
+        <hr>
+        <h6 class="mb-2">Format Kolom:</h6>
+        <ul class="small mb-0">
+          <li><strong>Name:</strong> Nama produk (wajib)</li>
+          <li><strong>Category:</strong> Nama kategori (opsional, akan dibuat otomatis jika belum ada)</li>
+          <li><strong>Price:</strong> Harga produk (wajib, angka)</li>
+          <li><strong>Stock:</strong> Jumlah stok (wajib, angka bulat)</li>
+          <li><strong>Description:</strong> Deskripsi produk (opsional)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

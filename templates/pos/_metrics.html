@@ -1,0 +1,32 @@
+<div class="metrics-grid">
+  <div class="metric-card">
+    <span class="metric-icon"><i class="{{ m1_icon }}"></i></span>
+    <div class="metric-left">
+      <div class="metric-number">{{ m1_number }}</div>
+      <div class="metric-label">{{ m1_label }}</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <span class="metric-icon"><i class="{{ m2_icon }}"></i></span>
+    <div class="metric-left">
+      <div class="metric-number">{{ m2_number }}</div>
+      <div class="metric-label">{{ m2_label }}</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <span class="metric-icon"><i class="{{ m3_icon }}"></i></span>
+    <div class="metric-left">
+      <div class="metric-number">{{ m3_number }}</div>
+      <div class="metric-label">{{ m3_label }}</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <span class="metric-icon"><i class="{{ m4_icon }}"></i></span>
+    <div class="metric-left">
+      <div class="metric-number">
+        <span id="totalRevenue" data-value="{{ m4_number|default:0 }}">-</span>
+      </div>
+      <div class="metric-label">{{ m4_label }}</div>
+    </div>
+  </div>
+</div>

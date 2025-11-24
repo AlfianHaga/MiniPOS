@@ -1,0 +1,14 @@
+{# Hero include: accepts `title`, `subtitle`, `icon`, `action_url`, `action_label`, `action_class` #}
+<div class="page-hero d-flex align-items-center justify-content-between">
+  <div>
+    <div class="hero-title">
+      {% if icon %}<i class="{{ icon }} me-2"></i>{% endif %}{{ title }}
+    </div>
+    {% if subtitle %}<div class="hero-subtitle">{{ subtitle }}</div>{% endif %}
+  </div>
+  {% if action_url and action_label %}
+  <div class="hero-action">
+    <a href="{{ action_url }}" class="{{ action_class|default:'btn btn-sm btn-light' }}">{{ action_label }}</a>
+  </div>
+  {% endif %}
+</div>

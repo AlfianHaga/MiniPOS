@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load humanize currency_filters %}
+{% block title %}PO {{ purchase_order.order_number }}{% endblock %}
+{% block page_title %}
+  {% include 'pos/_hero.html' with title=purchase_order.order_number subtitle='Detail Purchase Order' icon='bi bi-clipboard-check' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card p-4 mb-3">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <h6>Informasi Supplier</h6>
+          <p class="mb-1"><strong>{{ purchase_order.supplier.name }}</strong></p>
+          <p class="mb-1 text-muted small">Kontak: {{ purchase_order.supplier.contact_person|default:"-" }}</p>
+          <p class="mb-1 text-muted small">Telepon: {{ purchase_order.supplier.phone|default:"-" }}</p>
+          <p class="mb-0 text-muted small">Email: {{ purchase_order.supplier.email|default:"-" }}</p>
+        </div>
+        <div class="col-md-6">
+          <h6>Informasi Order</h6>
+          <p class="mb-1"><strong>Status:</strong> 
+            {% if purchase_order.status == 'pending' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% elif purchase_order.status == 'received' %}
+              <span class="badge bg-success">Diterima</span>
+            {% else %}
+              <span class="badge bg-danger">Dibatalkan</span>
+            {% endif %}
+          </p>
+          <p class="mb-1"><strong>Tanggal Order:</strong> {{ purchase_order.order_date|date:"d M Y, H:i" }}</p>
+          {% if purchase_order.received_date %}
+            <p class="mb-1"><strong>Tanggal Terima:</strong> {{ purchase_order.received_date|date:"d M Y, H:i" }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if purchase_order.notes %}
+      <div class="mb-3">
+        <h6>Catatan</h6>
+        <p class="text-muted mb-0">{{ purchase_order.notes }}</p>
+      </div>
+      {% endif %}
+
+      <hr>
+      <h6 class="mb-3">Item Produk</h6>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th class="text-end">Jumlah</th>
+              <th class="text-end">Harga Satuan</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in purchase_order.items.all %}
+            <tr>
+              <td>{{ item.product.name }}</td>
+              <td class="text-end">{{ item.quantity }}</td>
+              <td class="text-end">{{ item.unit_price|idr }}</td>
+              <td class="text-end">{{ item.subtotal|idr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="fw-bold">
+              <td colspan="3" class="text-end">Total:</td>
+              <td class="text-end">{{ purchase_order.total_amount|idr }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h6 class="mb-3">Aksi</h6>
+      {% if purchase_order.status == 'pending' %}
+        <a href="{% url 'purchase_order_receive' purchase_order.id %}" class="btn btn-success btn-sm mb-2">
+          <i class="bi bi-check-circle"></i> Terima Barang
+        </a>
+        <p class="text-muted small mb-0">Klik tombol ini untuk menerima barang dan menambah stok produk.</p>
+      {% elif purchase_order.status == 'received' %}
+        <div class="alert alert-success mb-0">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          Purchase order ini sudah diterima dan stok telah diperbarui.
+        </div>
+      {% endif %}
+      <hr>
+      <a href="{% url 'purchase_order_list' %}" class="btn btn-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

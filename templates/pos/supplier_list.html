@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Supplier{% endblock %}
+{% block page_title %}
+  {% url 'supplier_create' as create_url %}
+  {% include 'pos/_hero.html' with title='Supplier' subtitle='Kelola daftar supplier Anda' icon='bi bi-truck' action_url=create_url action_label='Tambah Supplier' action_class='btn btn-sm btn-light' %}
+{% endblock %}
+{% block content %}
+<div class="card p-3 mb-3">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-auto flex-grow-1">
+      <input type="text" name="q" class="form-control" placeholder="Cari supplier..." value="{{ query|default:'' }}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+      {% if query %}<a href="{% url 'supplier_list' %}" class="btn btn-secondary ms-2">Hapus</a>{% endif %}
+    </div>
+  </form>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Nama Supplier</th>
+          <th style="width: 180px;">Kontak</th>
+          <th style="width: 140px;">Telepon</th>
+          <th style="width: 220px;">Email</th>
+          <th style="width: 120px;" class="text-end">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+          <td><span class="truncate" title="{{ supplier.name }}">{{ supplier.name }}</span></td>
+          <td>{{ supplier.contact_person|default:"-" }}</td>
+          <td>{{ supplier.phone|default:"-" }}</td>
+          <td>{{ supplier.email|default:"-" }}</td>
+          <td class="actions text-end" style="white-space: nowrap;">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'supplier_update' supplier.id %}"><i class="bi bi-pencil"></i></a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'supplier_delete' supplier.id %}"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center">Tidak ada supplier</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

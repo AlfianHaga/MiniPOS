@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Hapus Pelanggan{% endblock %}
+{% block content %}
+<h3>Hapus Pelanggan</h3>
+<p>Apakah Anda yakin ingin menghapus '{{ customer.name }}'?</p>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger">Ya, hapus</button>
+  <a class="btn btn-secondary" href="{% url 'customer_list' %}">Batal</a>
+</form>
+{% endblock %}
