@@ -253,7 +253,7 @@ body {
     .sidebar-toggle {
         display: inline-flex !important;
     }
-    
+
     /* Better mobile menu button */
     .dropdown .btn-ghost {
         padding: 0.5rem;
@@ -261,7 +261,7 @@ body {
         line-height: 1;
         color: rgba(255, 255, 255, 0.95) !important;
     }
-    
+
     /* Mobile dropdown menu styling */
     .dropdown-menu {
         background: linear-gradient(180deg, #0b1220 0%, #071123 100%);
@@ -270,7 +270,7 @@ body {
         min-width: 260px !important;
         padding: 0.5rem;
     }
-    
+
     .dropdown-item {
         color: rgba(255, 255, 255, 0.85);
         padding: 0.65rem 1rem;
@@ -280,27 +280,27 @@ body {
         display: flex;
         align-items: center;
     }
-    
+
     .dropdown-item:hover,
     .dropdown-item:focus {
         background: rgba(37, 99, 235, 0.15);
         color: #fff;
     }
-    
+
     .dropdown-item i {
         width: 20px;
         opacity: 0.8;
     }
-    
+
     .dropdown-divider {
         border-top-color: rgba(255, 255, 255, 0.06);
         margin: 0.5rem 0;
     }
-    
+
     .dropdown-item.text-danger {
         color: #ef4444 !important;
     }
-    
+
     .dropdown-item.text-danger:hover {
         background: rgba(239, 68, 68, 0.1);
     }
@@ -365,20 +365,20 @@ body {
     .brand-icon i {
         font-size: 1.25rem;
     }
-    
+
     .brand-text {
         font-size: 1.1rem;
     }
-    
+
     /* Better dashboard card spacing on mobile */
-    .dashboard .row > [class*='col-'] {
+    .dashboard .row>[class*='col-'] {
         margin-bottom: 0.75rem;
     }
-    
+
     .metric-card {
         padding: 1.25rem 1rem;
     }
-    
+
     .metric-number {
         font-size: 1.75rem;
     }
@@ -467,6 +467,17 @@ body {
     .topbar-right .form-control {
         display: none
     }
+}
+
+/* Hide navbar icons on extra small (mobile phone) screens */
+@media (max-width:576px) {
+    .topbar-nav .nav-link i,
+    .dropdown-menu .dropdown-item i {
+        display: none !important;
+    }
+    /* remove leftover spacing after hiding icons */
+    .topbar-nav .nav-link .me-1 { margin-right: 0 !important; }
+    .dropdown-item .me-2 { margin-right: 0 !important; }
 }
 
 /* Content spacing */
