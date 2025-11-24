@@ -388,12 +388,31 @@ body {
         display: flex;
         flex-wrap: nowrap;
     }
-    .topbar-brand { flex: 1 1 auto; }
-    .mobile-menu-trigger { margin-left: auto; display: flex !important; }
-    .mobile-menu-trigger .btn { padding: .45rem .6rem; border-radius: .5rem; }
-    .mobile-menu-trigger .btn i { font-size: 1.9rem; line-height: 1; display: inline-block; }
+
+    .topbar-brand {
+        flex: 1 1 auto;
+    }
+
+    .mobile-menu-trigger {
+        margin-left: auto;
+        display: flex !important;
+    }
+
+    .mobile-menu-trigger .btn {
+        padding: .45rem .6rem;
+        border-radius: .5rem;
+    }
+
+    .mobile-menu-trigger .btn i {
+        font-size: 1.9rem;
+        line-height: 1;
+        display: inline-block;
+    }
+
     /* Ensure icon never hidden by generic rules */
-    .mobile-menu-trigger .btn i { visibility: visible !important; }
+    .mobile-menu-trigger .btn i {
+        visibility: visible !important;
+    }
 
     /* Hide text on very small screens */
     .btn-sm .me-1+* {
@@ -497,6 +516,12 @@ body {
     .dropdown-item .me-2 {
         margin-right: 0 !important;
     }
+
+    /* Completely disable nav links region so taps do not trigger hidden links */
+    .topbar-nav { display: none !important; pointer-events: none !important; }
+    .topbar-nav .nav-link { pointer-events: none !important; }
+    /* Allow brand to take full width */
+    .topbar-brand { flex: 1 1 auto; }
 }
 
 /* Content spacing */
