@@ -502,26 +502,19 @@ body {
 
 /* Hide navbar icons on extra small (mobile phone) screens */
 @media (max-width:576px) {
-
     .topbar-nav .nav-link i,
-    .dropdown-menu .dropdown-item i {
-        display: none !important;
-    }
-
-    /* remove leftover spacing after hiding icons */
-    .topbar-nav .nav-link .me-1 {
-        margin-right: 0 !important;
-    }
-
-    .dropdown-item .me-2 {
-        margin-right: 0 !important;
-    }
-
-    /* Completely disable nav links region so taps do not trigger hidden links */
+    .dropdown-menu .dropdown-item i { display: none !important; }
+    .topbar-nav .nav-link .me-1 { margin-right: 0 !important; }
+    .dropdown-item .me-2 { margin-right: 0 !important; }
+    /* Disable hidden nav area */
     .topbar-nav { display: none !important; pointer-events: none !important; }
     .topbar-nav .nav-link { pointer-events: none !important; }
-    /* Allow brand to take full width */
-    .topbar-brand { flex: 1 1 auto; }
+    /* Brand takes full width, add right padding for menu button */
+    .topbar-brand { flex: 1 1 auto; padding-right: 52px; }
+    /* Position mobile menu trigger consistently */
+    .mobile-menu-trigger { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+    .mobile-menu-trigger .btn { padding: .4rem .55rem; }
+    .mobile-menu-trigger .btn i { font-size: 1.9rem; line-height: 1; }
 }
 
 /* Content spacing */
