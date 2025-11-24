@@ -47,8 +47,8 @@
             </div>
             <!-- RIGHT: Nav + Mobile Dropdown + Logout -->
             <div class="d-flex align-items-center gap-2 ms-auto">
-              <!-- Desktop nav (only show on very wide screens) -->
-              <nav class="topbar-nav d-none d-xl-flex align-items-center gap-2">
+              <!-- Desktop nav (show only on very large screens ≥1400px) -->
+              <nav class="topbar-nav d-none d-xxl-flex align-items-center gap-2">
               <a class="nav-link px-3 {% if request.path == '/' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="bi bi-house-door-fill me-1"></i> <span class="d-none d-xl-inline">Beranda</span></a>
               <a class="nav-link px-3 {% if request.path|slice:"0:11" == '/categories' %}active{% endif %}" href="{% url 'category_list' %}"><i class="bi bi-tag me-1"></i> <span class="d-none d-xl-inline">Kategori</span></a>
               <a class="nav-link px-3 {% if request.path|slice:"0:9" == '/products' %}active{% endif %}" href="{% url 'product_list' %}"><i class="bi bi-box-seam me-1"></i> <span class="d-none d-xl-inline">Produk</span></a>
