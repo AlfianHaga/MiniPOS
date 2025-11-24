@@ -383,6 +383,18 @@ body {
         font-size: 1.75rem;
     }
 
+    /* Brand & mobile menu alignment */
+    .app-topbar .d-flex.align-items-center.justify-content-between.px-4 {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    .topbar-brand { flex: 1 1 auto; }
+    .mobile-menu-trigger { margin-left: auto; display: flex !important; }
+    .mobile-menu-trigger .btn { padding: .45rem .6rem; border-radius: .5rem; }
+    .mobile-menu-trigger .btn i { font-size: 1.9rem; line-height: 1; display: inline-block; }
+    /* Ensure icon never hidden by generic rules */
+    .mobile-menu-trigger .btn i { visibility: visible !important; }
+
     /* Hide text on very small screens */
     .btn-sm .me-1+* {
         display: none;
@@ -471,13 +483,20 @@ body {
 
 /* Hide navbar icons on extra small (mobile phone) screens */
 @media (max-width:576px) {
+
     .topbar-nav .nav-link i,
     .dropdown-menu .dropdown-item i {
         display: none !important;
     }
+
     /* remove leftover spacing after hiding icons */
-    .topbar-nav .nav-link .me-1 { margin-right: 0 !important; }
-    .dropdown-item .me-2 { margin-right: 0 !important; }
+    .topbar-nav .nav-link .me-1 {
+        margin-right: 0 !important;
+    }
+
+    .dropdown-item .me-2 {
+        margin-right: 0 !important;
+    }
 }
 
 /* Content spacing */

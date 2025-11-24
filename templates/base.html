@@ -60,9 +60,9 @@
               <a class="nav-link px-3 {% if request.path|slice:"0:9" == '/backups/' %}active{% endif %}" href="{% url 'backups_list' %}"><i class="bi bi-hdd-network me-1"></i> <span class="d-none d-xl-inline">Backup</span></a>
               </nav>
               <!-- Mobile Menu Dropdown moved to right -->
-              <div class="dropdown d-lg-none">
-                <button class="btn btn-ghost btn-sm" type="button" id="mobileMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-list" style="font-size: 1.6rem;"></i>
+              <div class="dropdown d-lg-none mobile-menu-trigger">
+                <button class="btn btn-ghost btn-sm" type="button" id="mobileMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu">
+                  <i class="bi bi-list"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuDropdown" style="min-width: 220px;">
                   <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-house-door-fill me-2"></i> Beranda</a></li>
