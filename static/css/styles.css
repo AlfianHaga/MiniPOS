@@ -712,3 +712,8 @@ body {
     background: rgba(255, 255, 255, 0.1);
     color: white;
 }
+
+/* Force hide horizontal nav on all mobile & tablet widths <992px (safety override) */
+@media (max-width: 991.98px) {
+    .topbar-nav { display: none !important; visibility: hidden !important; }
+}
