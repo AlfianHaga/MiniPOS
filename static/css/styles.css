@@ -727,6 +727,10 @@ body {
         padding: .40rem .50rem;
         min-height: 54px;
     }
+    /* Reduce side padding on Bootstrap containers for 320-360 */
+    .container, .container-fluid { padding-left:.5rem; padding-right:.5rem; }
+    /* Force cards full-width minus minimal padding */
+    .metric-card { width:100%; }
 
     .brand-icon {
         width: 30px;
@@ -787,6 +791,8 @@ body {
     .app-topbar {
         padding: .45rem .55rem;
     }
+    .container, .container-fluid { padding-left:.55rem; padding-right:.55rem; }
+    .metric-card { width:100%; }
 
     .brand-text {
         font-size: .9rem;
@@ -812,6 +818,8 @@ body {
     .app-topbar {
         padding: .48rem .6rem;
     }
+    .container, .container-fluid { padding-left:.6rem; padding-right:.6rem; }
+    .metric-card { width:100%; }
 
     .brand-text {
         font-size: .95rem;
