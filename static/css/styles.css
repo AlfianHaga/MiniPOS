@@ -715,5 +715,125 @@ body {
 
 /* Force hide horizontal nav on all mobile & tablet widths <992px (safety override) */
 @media (max-width: 991.98px) {
-    .topbar-nav { display: none !important; visibility: hidden !important; }
+    .topbar-nav {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}
+
+/* Ultra small phones (<=360px) */
+@media (max-width:360px) {
+    .app-topbar {
+        padding: .45rem .6rem;
+    }
+
+    .brand-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .brand-icon i {
+        font-size: 1.1rem;
+    }
+
+    .brand-text {
+        font-size: .9rem;
+    }
+
+    .mobile-menu-trigger .btn i {
+        font-size: 1.6rem;
+    }
+
+    .metric-number {
+        font-size: 1.2rem;
+    }
+
+    .metric-card {
+        padding: .75rem .65rem;
+    }
+}
+
+/* Small phones (361px–412px) */
+@media (min-width:361px) and (max-width:412px) {
+    .brand-text {
+        font-size: 1rem;
+    }
+
+    .metric-card {
+        padding: .9rem .75rem;
+    }
+}
+
+/* Medium phones (413px–480px) */
+@media (min-width:413px) and (max-width:480px) {
+    .brand-text {
+        font-size: 1.05rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+}
+
+/* Large phones / phablets (481px–600px) */
+@media (min-width:481px) and (max-width:600px) {
+    .app-topbar {
+        padding: .55rem .9rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* Small tablets (601px–768px) */
+@media (min-width:601px) and (max-width:768px) {
+    .app-topbar {
+        padding: .6rem 1rem;
+    }
+
+    .dashboard .row>[class*='col-'] {
+        margin-bottom: .85rem;
+    }
+
+    .metric-card {
+        padding: 1rem .85rem;
+    }
+}
+
+/* Tablets (769px–991px) */
+@media (min-width:769px) and (max-width:991px) {
+    .app-topbar {
+        padding: .65rem 1.25rem;
+    }
+
+    .brand-text {
+        font-size: 1.15rem;
+    }
+
+    .metric-number {
+        font-size: 1.5rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
+}
+
+/* Ensure mobile dropdown button remains visible for all sub-992 widths */
+@media (max-width:991.98px) {
+    .mobile-menu-trigger {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .mobile-menu-trigger .btn {
+        padding: .42rem .6rem;
+    }
+
+    .mobile-menu-trigger .btn i {
+        display: inline-block;
+    }
 }
