@@ -727,10 +727,18 @@ body {
         padding: .40rem .50rem;
         min-height: 54px;
     }
+
     /* Reduce side padding on Bootstrap containers for 320-360 */
-    .container, .container-fluid { padding-left:.5rem; padding-right:.5rem; }
+    .container,
+    .container-fluid {
+        padding-left: .5rem;
+        padding-right: .5rem;
+    }
+
     /* Force cards full-width minus minimal padding */
-    .metric-card { width:100%; }
+    .metric-card {
+        width: 100%;
+    }
 
     .brand-icon {
         width: 30px;
@@ -784,6 +792,9 @@ body {
     .metric-card .small {
         font-size: .68rem;
     }
+    /* Enforce no horizontal overflow and 100% width */
+    html, body { width:100%; overflow-x:hidden; }
+    .app-shell, .app-main, .app-content { max-width:100% !important; }
 }
 
 /* Small phones (361px–375px) e.g. iPhone 11/12/13 mini/SE (newer) */
@@ -791,8 +802,16 @@ body {
     .app-topbar {
         padding: .45rem .55rem;
     }
-    .container, .container-fluid { padding-left:.55rem; padding-right:.55rem; }
-    .metric-card { width:100%; }
+
+    .container,
+    .container-fluid {
+        padding-left: .55rem;
+        padding-right: .55rem;
+    }
+
+    .metric-card {
+        width: 100%;
+    }
 
     .brand-text {
         font-size: .9rem;
@@ -811,6 +830,8 @@ body {
     .metric-card h5 {
         font-size: .8rem;
     }
+    html, body { width:100%; overflow-x:hidden; }
+    .app-shell, .app-main, .app-content { max-width:100% !important; }
 }
 
 /* Mid small phones (376px–412px) standard small/medium devices */
@@ -818,8 +839,16 @@ body {
     .app-topbar {
         padding: .48rem .6rem;
     }
-    .container, .container-fluid { padding-left:.6rem; padding-right:.6rem; }
-    .metric-card { width:100%; }
+
+    .container,
+    .container-fluid {
+        padding-left: .6rem;
+        padding-right: .6rem;
+    }
+
+    .metric-card {
+        width: 100%;
+    }
 
     .brand-text {
         font-size: .95rem;
@@ -837,6 +866,8 @@ body {
     .metric-card h5 {
         font-size: .83rem;
     }
+    html, body { width:100%; overflow-x:hidden; }
+    .app-shell, .app-main, .app-content { max-width:100% !important; }
 }
 
 /* Medium phones (413px–480px) */
