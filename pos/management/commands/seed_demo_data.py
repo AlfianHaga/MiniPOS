@@ -123,7 +123,7 @@ class Command(BaseCommand):
             supplier = random.choice(suppliers)
             po = PurchaseOrder.objects.create(
                 supplier=supplier,
-                order_number=f'PO-DEMO-{timezone.now().strftime('%Y%m%d')}-{i+1}',
+                order_number=f'PO-DEMO-{timezone.now().strftime("%Y%m%d")}-{i+1}',
                 status='received',
                 total_amount=Decimal('0'),
                 notes=f'PO Demo {i+1}',
@@ -182,3 +182,4 @@ class Command(BaseCommand):
         self.stdout.write(f'  Supplier: {Supplier.objects.count()}')
         self.stdout.write(f'  Purchase Order: {PurchaseOrder.objects.count()}')
         self.stdout.write(f'  Sales Order: {Order.objects.count()}')
+
