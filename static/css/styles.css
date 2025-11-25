@@ -792,9 +792,19 @@ body {
     .metric-card .small {
         font-size: .68rem;
     }
+
     /* Enforce no horizontal overflow and 100% width */
-    html, body { width:100%; overflow-x:hidden; }
-    .app-shell, .app-main, .app-content { max-width:100% !important; }
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .app-shell,
+    .app-main,
+    .app-content {
+        max-width: 100% !important;
+    }
 }
 
 /* Small phones (361px–375px) e.g. iPhone 11/12/13 mini/SE (newer) */
@@ -830,8 +840,18 @@ body {
     .metric-card h5 {
         font-size: .8rem;
     }
-    html, body { width:100%; overflow-x:hidden; }
-    .app-shell, .app-main, .app-content { max-width:100% !important; }
+
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .app-shell,
+    .app-main,
+    .app-content {
+        max-width: 100% !important;
+    }
 }
 
 /* Mid small phones (376px–412px) standard small/medium devices */
@@ -866,8 +886,18 @@ body {
     .metric-card h5 {
         font-size: .83rem;
     }
-    html, body { width:100%; overflow-x:hidden; }
-    .app-shell, .app-main, .app-content { max-width:100% !important; }
+
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .app-shell,
+    .app-main,
+    .app-content {
+        max-width: 100% !important;
+    }
 }
 
 /* Medium phones (413px–480px) */

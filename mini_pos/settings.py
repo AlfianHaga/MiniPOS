@@ -5,7 +5,10 @@ Minimal development settings using SQLite.
 
 from pathlib import Path
 import os
-import dj_database_url
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,7 +63,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "mini_pos.wsgi.application"
 
 # Database - use PostgreSQL in production, SQLite in development
-if os.environ.get("DATABASE_URL"):
+if os.environ.get("DATABASE_URL") and dj_database_url:
     DATABASES = {
         "default": dj_database_url.config(
             default=os.environ.get("DATABASE_URL"),
